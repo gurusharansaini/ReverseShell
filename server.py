@@ -6,7 +6,71 @@ from queue import Queue
 
 ######################################################################################
 ##############################################################################################
+def logo():
+    #Here is the updated code:
 
+
+    def print_doormat(width, height, text):
+        # Print the top border
+        print("***************______***************")
+        print("*            /        \\            *")
+        print("*           /          \\           *")
+
+        # Print the text
+        for i in range(height):
+            if i == height // 2 - 1:
+                print("*          /                      \\          *")
+            elif i == height // 2:
+                print("*          /  ***************  \\          *")
+                print("*          /  *             *  \\          *")
+                print("*          /  *  REVERSE   *  \\          *")
+                print("*          /  *  SHELL     *  \\          *")
+                print("*          /  *             *  \\          *")
+                print("*          /  ***************  \\          *")
+            elif i == height // 2 + 1:
+                print("*          /                      \\          *")
+            else:
+                print("*         /                    \\         *")
+
+        # Print the bottom border
+        print("*        /                        \\        *")
+        print("*       /                          \\       *")
+        print("*______/____________________________\\_____ *")
+        print("***************________***************")
+
+        # Print the welcome message
+        print("Welcome to", text)
+
+    # Define the dimensions of the doormat
+    width, height = 40, 13
+
+    # Define the text to be printed on the doormat
+    text = "Reverse Shell"
+
+    # Print the doormat
+    print_doormat(width, height, text)
+
+    """
+    When you run this code, it will output:
+
+
+    ***************______***************
+    *            /        \            *
+    *           /          \           *
+    *          /                      \          *
+    *          /  ***************  \          *
+    *          /  *             *  \          *
+    *          /  *  REVERSE   *  \          *
+    *          /  *  SHELL     *  \          *
+    *          /  *             *  \          *
+    *          /  ***************  \          *
+    *          /                      \          *
+    *         /                    \         *
+    *        /                        \        *
+    *______/____________________________\_____ *
+    ***************________***************
+    Welcome to Reverse Shell
+    """
 
 
 
@@ -79,6 +143,7 @@ def accept_connection():
 
 
 def start_turtle():
+    logo()
     
     while True:
         cmd = input('turtle> ')
